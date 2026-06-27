@@ -1,0 +1,28 @@
+# Build output
+bin/
+obj/
+
+# VS
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# Packages
+*.nupkg
+*.snupkg
+
+# Test results
+TestResults/
+coverage/
+
+# Misc
+*.tmp
+*.cache
+
+# Carpeta de logs de la API
+App.Api/Logs/
