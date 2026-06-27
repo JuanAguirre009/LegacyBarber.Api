@@ -4,7 +4,6 @@ using LegacyBarber.App.Core.Interfaces.Identity;
 using LegacyBarber.App.Core.Security;
 using LegacyBarber.App.Core.Services.Identity;
 using LegacyBarber.App.DataAccess;
-using LegacyBarber.App.Util;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -16,10 +15,8 @@ namespace LegacyBarber.App.Api.Extensions
         public static void AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpContextAccessor();
-            services.AddScoped<IUserAuthenticationService, UserServices>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddDataAccessServiceExtensions(configuration);
-            services.AddUtilServiceExtensions();
             AddIdentityServices(services);
         }
 

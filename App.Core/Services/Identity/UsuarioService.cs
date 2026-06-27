@@ -60,6 +60,8 @@ namespace LegacyBarber.App.Core.Services.Identity
             user.SetRoles(roles);
 
             await usuarioRepository.CreateAsync(user, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
             return MapToModel(user);
         }
 

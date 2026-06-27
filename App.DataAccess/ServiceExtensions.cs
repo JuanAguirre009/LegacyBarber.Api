@@ -13,6 +13,7 @@ namespace LegacyBarber.App.DataAccess
             services.AddDbContext<AppDbContext>(op =>
             {
                 op.UseNpgsql(configuration.GetConnectionString("Default"));
+                op.UseSnakeCaseNamingConvention();
             });
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>());
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();

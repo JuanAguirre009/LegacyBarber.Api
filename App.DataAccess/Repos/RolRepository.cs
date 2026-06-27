@@ -16,7 +16,6 @@ namespace LegacyBarber.App.DataAccess.Repos
         public async Task<Rol?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
         {
             return await context.Roles
-                .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.Nombre == name, cancellationToken);
         }
 
@@ -24,7 +23,6 @@ namespace LegacyBarber.App.DataAccess.Repos
         {
             var normalizedNames = names.Select(n => n.Trim()).ToList();
             return await context.Roles
-                .AsNoTracking()
                 .Where(r => normalizedNames.Contains(r.Nombre))
                 .ToListAsync(cancellationToken);
         }

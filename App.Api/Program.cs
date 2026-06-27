@@ -16,7 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplicationServices(builder.Configuration);
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddValidatorsFromAssemblyContaining<LegacyBarber.App.Core.Validators.Identity.LoginValidator>();
 builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);
 builder.Services.AddScoped<DatabaseSeeder>();
 

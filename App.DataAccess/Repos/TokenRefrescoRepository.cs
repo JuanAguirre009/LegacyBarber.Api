@@ -24,7 +24,6 @@ namespace LegacyBarber.App.DataAccess.Repos
         public async Task<TokenRefresco> CreateAsync(TokenRefresco tokenRefresco, CancellationToken cancellationToken = default)
         {
             await context.TokensRefresco.AddAsync(tokenRefresco, cancellationToken);
-            await context.SaveChangesAsync(cancellationToken);
             return tokenRefresco;
         }
 

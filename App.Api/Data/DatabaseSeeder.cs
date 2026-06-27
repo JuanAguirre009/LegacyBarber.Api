@@ -2,6 +2,7 @@
 using LegacyBarber.App.DataAccess;
 using LegacyBarber.App.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace LegacyBarber.App.Api.Data
@@ -14,12 +15,19 @@ namespace LegacyBarber.App.Api.Data
         private readonly AppDbContext context;
         private readonly IPasswordHasher passwordHasher;
         private readonly ILogger<DatabaseSeeder> logger;
+        private readonly string superAdminPassword;
 
-        public DatabaseSeeder(AppDbContext context, IPasswordHasher passwordHasher, ILogger<DatabaseSeeder> logger)
+        public DatabaseSeeder(
+            AppDbContext context,
+            IPasswordHasher passwordHasher,
+            ILogger<DatabaseSeeder> logger,
+            IConfiguration configuration)
         {
             this.context = context;
             this.passwordHasher = passwordHasher;
             this.logger = logger;
+            superAdminPassword = configuration["SuperAdmin:Password"]
+                ?? throw new InvalidOperationException("SuperAdmin:Password must be configured via User Secrets or environment variable.");
         }
 
         public async Task SeedAsync(CancellationToken cancellationToken = default)
@@ -41,17 +49,6 @@ namespace LegacyBarber.App.Api.Data
 
         private async Task SeedSuperAdminAsync(CancellationToken cancellationToken)
         {
-            var barberia = new Barberia
-            {
-                Nombre = "Legacy Barber Sistema",
-                Email = "admin@legacybarber.app",
-                Activa = true,
-                CreadoEn = DateTime.UtcNow
-            };
-
-            await context.Barberias.AddAsync(barberia, cancellationToken);
-            await context.SaveChangesAsync(cancellationToken);
-
             Rol? rolSuperAdmin = await context.Roles
                 .FirstOrDefaultAsync(r => r.Nombre == "superadmin", cancellationToken);
 
@@ -63,9 +60,9 @@ namespace LegacyBarber.App.Api.Data
 
             var superAdmin = Usuario.Create(
                 "admin@legacybarber.app",
-                passwordHasher.HashPassword("Admin123!"),
+                passwordHasher.HashPassword(superAdminPassword),
                 "Administrador del Sistema",
-                barberia.Id);
+                barberiaId: null);
 
             superAdmin.AddRole(rolSuperAdmin);
 

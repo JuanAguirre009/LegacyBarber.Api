@@ -20,7 +20,6 @@ namespace LegacyBarber.App.Domain.Entities
         public ICollection<HorarioBarbero> Horarios { get; set; } = new List<HorarioBarbero>();
         public ICollection<ExcepcionHorario> ExcepcionesHorarios { get; set; } = new List<ExcepcionHorario>();
         public ICollection<Cita> Citas { get; set; } = new List<Cita>();
-        public ICollection<Pago> Pagos { get; set; } = new List<Pago>();
         public ICollection<Resena> Resenas { get; set; } = new List<Resena>();
     }
 }
