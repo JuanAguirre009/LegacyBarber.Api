@@ -16,7 +16,6 @@ namespace LegacyBarber.App.DataAccess.Repos
         public async Task<Usuario?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
         {
             return await context.Usuarios
-                .AsNoTracking()
                 .Include(u => u.UsuarioRoles)
                 .ThenInclude(ur => ur.Rol)
                 .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);

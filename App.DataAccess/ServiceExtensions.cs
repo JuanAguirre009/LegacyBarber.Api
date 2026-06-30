@@ -19,6 +19,18 @@ namespace LegacyBarber.App.DataAccess
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<IRolRepository, RolRepository>();
             services.AddScoped<IRefreshTokenRepository, TokenRefrescoRepository>();
+
+            services.AddScoped<IBarberiaRepository, BarberiaRepository>();
+            services.AddScoped<IBarberoRepository, BarberoRepository>();
+            services.AddScoped<IClienteRepository, ClienteRepository>();
+            services.AddScoped<IServicioRepository, ServicioRepository>();
+            services.AddScoped<ICategoriaServicioRepository, CategoriaServicioRepository>();
+            services.AddScoped<ICitaRepository, CitaRepository>();
+            services.AddScoped<IPagoRepository, PagoRepository>();
+            services.AddScoped<IResenaRepository, ResenaRepository>();
+            services.AddScoped<INotificacionRepository, NotificacionRepository>();
+            services.AddScoped<IConfiguracionRepository, ConfiguracionRepository>();
+            services.AddScoped<IMetodoPagoRepository, MetodoPagoRepository>();
         }
     }
 }
