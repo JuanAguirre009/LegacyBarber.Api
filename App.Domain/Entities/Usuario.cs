@@ -29,7 +29,7 @@
         public IReadOnlyCollection<string> Roles => usuarioRoles.Select(ur => ur.Rol.Nombre).ToList().AsReadOnly();
         public IReadOnlyCollection<TokenRefresco> TokensRefresco => tokensRefresco.AsReadOnly();
 
-        public static Usuario Create(string email, string passwordHash, string nombreCompleto, long? barberiaId = null)
+        public static Usuario Create(string email, string passwordHash, string nombreCompleto, string? telefono = null, long? barberiaId = null)
         {
             if (string.IsNullOrWhiteSpace(email))
                 throw new ArgumentException("The email is required.", nameof(email));
@@ -43,6 +43,7 @@
                 Email = email.Trim().ToLowerInvariant(),
                 PasswordHash = passwordHash,
                 NombreCompleto = nombreCompleto.Trim(),
+                Telefono = telefono,
                 BarberiaId = barberiaId
             };
         }

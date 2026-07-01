@@ -27,6 +27,21 @@ namespace LegacyBarber.App.Api.Extensions
             services.AddDataAccessServiceExtensions(configuration);
             AddIdentityServices(services);
             AddBusinessServices(services);
+            AddCorsPolicy(services);
+        }
+
+        public static void AddCorsPolicy(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Frontend", policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
+            });
         }
 
         public static void AddAuthenticationAndAuthorization(this IServiceCollection services, IConfiguration configuration)

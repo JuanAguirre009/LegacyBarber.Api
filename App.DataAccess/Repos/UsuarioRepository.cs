@@ -12,6 +12,14 @@ namespace LegacyBarber.App.DataAccess.Repos
         {
         }
 
+        public override async Task<Usuario?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
+        {
+            return await context.Usuarios
+                .Include(u => u.UsuarioRoles)
+                .ThenInclude(ur => ur.Rol)
+                .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        }
+
         public async Task<Usuario?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
             return await context.Usuarios

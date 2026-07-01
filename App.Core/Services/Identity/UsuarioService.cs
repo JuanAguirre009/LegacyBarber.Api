@@ -54,6 +54,7 @@ namespace LegacyBarber.App.Core.Services.Identity
                 model.Email,
                 passwordHash,
                 model.NombreCompleto,
+                model.Telefono,
                 model.BarberiaId);
 
             IReadOnlyList<Rol> roles = (await rolRepository.GetByNamesAsync(model.Roles, cancellationToken)).ToList();
@@ -74,12 +75,34 @@ namespace LegacyBarber.App.Core.Services.Identity
                 return null;
 
             user.Update(model.NombreCompleto, model.Telefono, model.Activo);
-            IReadOnlyList<Rol> roles = (await rolRepository.GetByNamesAsync(model.Roles, cancellationToken)).ToList();
-            user.SetRoles(roles);
-            usuarioRepository.Update(user);
+            IReadOnlyList<Rol> roles = await rolRepository.GetByNamesAsync(model.Roles, cancellationToken);
+            SyncRoles(user, roles);
+
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return MapToModel(user);
+        }
+
+        private static void SyncRoles(Usuario user, IReadOnlyList<Rol> newRoles)
+        {
+            List<string> newRoleNames = newRoles.Select(r => r.Nombre).ToList();
+
+            // Remove roles that are no longer assigned.
+            List<UsuarioRol> rolesToRemove = user.UsuarioRoles
+                .Where(ur => !newRoleNames.Contains(ur.Rol.Nombre))
+                .ToList();
+
+            foreach (UsuarioRol usuarioRol in rolesToRemove)
+            {
+                user.UsuarioRoles.Remove(usuarioRol);
+            }
+
+            // Add only the roles that the user does not already have.
+            List<string> currentRoleNames = user.UsuarioRoles.Select(ur => ur.Rol.Nombre).ToList();
+            foreach (Rol role in newRoles.Where(r => !currentRoleNames.Contains(r.Nombre)))
+            {
+                user.AddRole(role);
+            }
         }
 
         public async Task<bool> DeleteAsync(long id, CancellationToken cancellationToken = default)
