@@ -80,7 +80,7 @@ namespace LegacyBarber.App.Core.Services.Identity
             TokenRefresco newRefreshToken = TokenRefresco.Create(refreshTokenValue, refreshTokenExpiresAt);
             newRefreshToken.UsuarioId = userModel.Id;
 
-            await refreshTokenRepository.CreateAsync(newRefreshToken, cancellationToken);
+            refreshTokenRepository.Add(newRefreshToken);
             tokenPair.RefreshToken = refreshTokenValue;
 
             return tokenPair;
