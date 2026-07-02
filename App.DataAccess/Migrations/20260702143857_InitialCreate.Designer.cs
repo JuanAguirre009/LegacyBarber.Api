@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LegacyBarber.App.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260627181710_InitialCreate")]
+    [Migration("20260702143857_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -159,6 +159,10 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("actualizado_en");
 
+                    b.Property<string>("Ciudad")
+                        .HasColumnType("text")
+                        .HasColumnName("ciudad");
+
                     b.Property<string>("Configuracion")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -178,6 +182,18 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("email");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasDefaultValue("en_configuracion")
+                        .HasColumnName("estado");
+
+                    b.Property<DateTime?>("FechaActivacion")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("fecha_activacion");
 
                     b.Property<string>("HorarioAtencion")
                         .IsRequired()
@@ -199,6 +215,11 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnType("text")
                         .HasColumnName("nombre");
 
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("slug");
+
                     b.Property<string>("Telefono")
                         .HasColumnType("text")
                         .HasColumnName("telefono");
@@ -212,6 +233,10 @@ namespace LegacyBarber.App.DataAccess.Migrations
 
                     b.HasIndex("LogoId")
                         .HasDatabaseName("ix_barberias_logo_id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique()
+                        .HasDatabaseName("ix_barberias_slug");
 
                     b.ToTable("barberias", (string)null);
                 });
@@ -551,7 +576,6 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasName("pk_clientes");
 
                     b.HasIndex("UsuarioId")
-                        .IsUnique()
                         .HasDatabaseName("ix_clientes_usuario_id");
 
                     b.HasIndex("BarberiaId", "UsuarioId")
@@ -1081,7 +1105,7 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         new
                         {
                             Id = 1L,
-                            CreadoEn = new DateTime(2026, 6, 27, 18, 17, 10, 148, DateTimeKind.Utc).AddTicks(1019),
+                            CreadoEn = new DateTime(2026, 7, 2, 14, 38, 56, 938, DateTimeKind.Utc).AddTicks(356),
                             Descripcion = "Superadministrador del sistema Legacy Barber",
                             EsSistema = true,
                             Nombre = "superadmin"
@@ -1089,7 +1113,7 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         new
                         {
                             Id = 2L,
-                            CreadoEn = new DateTime(2026, 6, 27, 18, 17, 10, 148, DateTimeKind.Utc).AddTicks(1024),
+                            CreadoEn = new DateTime(2026, 7, 2, 14, 38, 56, 938, DateTimeKind.Utc).AddTicks(362),
                             Descripcion = "Administrador de la barbería",
                             EsSistema = true,
                             Nombre = "admin"
@@ -1097,7 +1121,7 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         new
                         {
                             Id = 3L,
-                            CreadoEn = new DateTime(2026, 6, 27, 18, 17, 10, 148, DateTimeKind.Utc).AddTicks(1025),
+                            CreadoEn = new DateTime(2026, 7, 2, 14, 38, 56, 938, DateTimeKind.Utc).AddTicks(363),
                             Descripcion = "Barbero que atiende citas",
                             EsSistema = true,
                             Nombre = "barbero"
@@ -1105,7 +1129,7 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         new
                         {
                             Id = 4L,
-                            CreadoEn = new DateTime(2026, 6, 27, 18, 17, 10, 148, DateTimeKind.Utc).AddTicks(1026),
+                            CreadoEn = new DateTime(2026, 7, 2, 14, 38, 56, 938, DateTimeKind.Utc).AddTicks(363),
                             Descripcion = "Cliente que agenda citas",
                             EsSistema = true,
                             Nombre = "cliente"
@@ -1506,8 +1530,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasConstraintName("fk_clientes_barberias_barberia_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Usuario", "Usuario")
-                        .WithOne("Cliente")
-                        .HasForeignKey("LegacyBarber.App.Domain.Entities.Cliente", "UsuarioId")
+                        .WithMany("Clientes")
+                        .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_clientes_usuarios_usuario_id");
@@ -1834,7 +1858,7 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Navigation("Barbero");
 
-                    b.Navigation("Cliente");
+                    b.Navigation("Clientes");
 
                     b.Navigation("TokensRefresco");
 

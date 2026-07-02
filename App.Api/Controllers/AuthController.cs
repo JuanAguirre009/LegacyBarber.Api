@@ -17,12 +17,20 @@ namespace LegacyBarber.App.Api.Controllers
             this.authService = authService;
         }
 
+        [HttpPost("register")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody] RegistrarClienteModel request, CancellationToken cancellationToken)
+        {
+            UsuarioModel user = await authService.RegisterAsync(request, cancellationToken);
+            return Ok(user);
+        }
+
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginModel request, CancellationToken cancellationToken)
         {
-            TokenPairModel tokenPair = await authService.LoginAsync(request, cancellationToken);
-            return Ok(tokenPair);
+            LoginResponseModel response = await authService.LoginAsync(request, cancellationToken);
+            return Ok(response);
         }
 
         [HttpPost("refresh")]

@@ -17,6 +17,9 @@ namespace LegacyBarber.App.DataAccess.Repos
             return await context.Usuarios
                 .Include(u => u.UsuarioRoles)
                 .ThenInclude(ur => ur.Rol)
+                .Include(u => u.Clientes)
+                .ThenInclude(c => c.Barberia)
+                .Include(u => u.Barbero)
                 .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
         }
 
@@ -26,6 +29,9 @@ namespace LegacyBarber.App.DataAccess.Repos
                 .AsNoTracking()
                 .Include(u => u.UsuarioRoles)
                 .ThenInclude(ur => ur.Rol)
+                .Include(u => u.Clientes)
+                .ThenInclude(c => c.Barberia)
+                .Include(u => u.Barbero)
                 .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
         }
 
@@ -35,6 +41,9 @@ namespace LegacyBarber.App.DataAccess.Repos
                 .AsNoTracking()
                 .Include(u => u.UsuarioRoles)
                 .ThenInclude(ur => ur.Rol)
+                .Include(u => u.Clientes)
+                .ThenInclude(c => c.Barberia)
+                .Include(u => u.Barbero)
                 .ToListAsync(cancellationToken);
         }
     }

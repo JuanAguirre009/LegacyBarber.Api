@@ -12,6 +12,7 @@ namespace LegacyBarber.App.Core.Services.Identity
     public sealed class AuthService : IAuthService
     {
         private readonly IUsuarioRepository usuarioRepository;
+        private readonly IRolRepository rolRepository;
         private readonly IRefreshTokenRepository refreshTokenRepository;
         private readonly IPasswordHasher passwordHasher;
         private readonly ITokenService tokenService;
@@ -21,6 +22,7 @@ namespace LegacyBarber.App.Core.Services.Identity
 
         public AuthService(
             IUsuarioRepository usuarioRepository,
+            IRolRepository rolRepository,
             IRefreshTokenRepository refreshTokenRepository,
             IPasswordHasher passwordHasher,
             ITokenService tokenService,
@@ -29,6 +31,7 @@ namespace LegacyBarber.App.Core.Services.Identity
             JwtSettings jwtSettings)
         {
             this.usuarioRepository = usuarioRepository;
+            this.rolRepository = rolRepository;
             this.refreshTokenRepository = refreshTokenRepository;
             this.passwordHasher = passwordHasher;
             this.tokenService = tokenService;
@@ -37,7 +40,7 @@ namespace LegacyBarber.App.Core.Services.Identity
             this.jwtSettings = jwtSettings;
         }
 
-        public async Task<TokenPairModel> LoginAsync(LoginModel request, CancellationToken cancellationToken = default)
+        public async Task<LoginResponseModel> LoginAsync(LoginModel request, CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -45,9 +48,55 @@ namespace LegacyBarber.App.Core.Services.Identity
             if (user == null || !user.Activo || !passwordHasher.VerifyPassword(user.PasswordHash, request.Password))
                 throw new UnauthorizedAccessException("Invalid credentials.");
 
-            TokenPairModel tokenPair = await GenerateTokenPairAsync(MapToModel(user), cancellationToken);
+            return await BuildLoginResponseAsync(user, cancellationToken);
+        }
+
+        public async Task<LoginResponseModel> BuildLoginResponseAsync(Usuario user, CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(user);
+
+            UsuarioModel userModel = MapToModel(user);
+            TokenPairModel tokenPair = await GenerateTokenPairAsync(userModel, cancellationToken);
+
             await unitOfWork.SaveChangesAsync(cancellationToken);
-            return tokenPair;
+
+            return new LoginResponseModel
+            {
+                AccessToken = tokenPair.AccessToken,
+                RefreshToken = tokenPair.RefreshToken,
+                ExpiresAt = tokenPair.ExpiresAt,
+                Usuario = userModel,
+                Barberias = MapBarberias(user.Clientes)
+            };
+        }
+
+        public async Task<UsuarioModel> RegisterAsync(RegistrarClienteModel request, CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+
+            Usuario? existing = await usuarioRepository.GetByEmailAsync(request.Email, cancellationToken);
+            if (existing is not null)
+                throw new InvalidOperationException("El email ya está registrado.");
+
+            Rol? rolCliente = await rolRepository.GetByNameAsync("cliente", cancellationToken);
+            if (rolCliente is null)
+                throw new InvalidOperationException("Rol cliente no encontrado.");
+
+            string passwordHash = passwordHasher.HashPassword(request.Password);
+            Usuario user = Usuario.Create(
+                request.Email,
+                passwordHash,
+                request.NombreCompleto,
+                request.Telefono,
+                barberiaId: null);
+
+            user.EmailVerificado = true; // Temporary until email verification is implemented.
+            user.AddRole(rolCliente);
+
+            usuarioRepository.Add(user);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return MapToModel(user);
         }
 
         public async Task<TokenPairModel> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
@@ -98,6 +147,24 @@ namespace LegacyBarber.App.Core.Services.Identity
                 Activo = user.Activo,
                 Roles = user.Roles.ToList()
             };
+        }
+
+        private static ICollection<BarberiaResumenModel> MapBarberias(ICollection<Cliente> clientes)
+        {
+            return clientes
+                .Where(c => c.Barberia != null)
+                .Select(c => new BarberiaResumenModel
+                {
+                    Id = c.Barberia!.Id,
+                    Nombre = c.Barberia.Nombre,
+                    Slug = c.Barberia.Slug,
+                    Direccion = c.Barberia.Direccion,
+                    Ciudad = c.Barberia.Ciudad,
+                    Telefono = c.Barberia.Telefono,
+                    HorarioAtencion = c.Barberia.HorarioAtencion,
+                    LogoId = c.Barberia.LogoId
+                })
+                .ToList();
         }
     }
 }

@@ -4,14 +4,18 @@ namespace LegacyBarber.App.Domain.Entities
     {
         public long Id { get; set; }
         public string Nombre { get; set; } = string.Empty;
+        public string Slug { get; set; } = string.Empty;
         public string? Nit { get; set; }
         public string? Direccion { get; set; }
+        public string? Ciudad { get; set; }
         public string? Telefono { get; set; }
         public string Email { get; set; } = string.Empty;
         public string HorarioAtencion { get; set; } = "{}";
         public long? LogoId { get; set; }
         public string Configuracion { get; set; } = "{}";
         public bool Activa { get; set; } = true;
+        public string Estado { get; set; } = EstadoBarberia.EnConfiguracion;
+        public DateTime? FechaActivacion { get; set; }
         public DateTime CreadoEn { get; set; } = DateTime.UtcNow;
         public DateTime? ActualizadoEn { get; set; }
 

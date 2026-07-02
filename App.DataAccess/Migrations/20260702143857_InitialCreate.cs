@@ -76,14 +76,18 @@ namespace LegacyBarber.App.DataAccess.Migrations
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     nombre = table.Column<string>(type: "text", nullable: false),
+                    slug = table.Column<string>(type: "text", nullable: false),
                     nit = table.Column<string>(type: "text", nullable: true),
                     direccion = table.Column<string>(type: "text", nullable: true),
+                    ciudad = table.Column<string>(type: "text", nullable: true),
                     telefono = table.Column<string>(type: "text", nullable: true),
                     email = table.Column<string>(type: "text", nullable: false),
                     horario_atencion = table.Column<string>(type: "jsonb", nullable: false, defaultValue: "{}"),
                     logo_id = table.Column<long>(type: "bigint", nullable: true),
                     configuracion = table.Column<string>(type: "jsonb", nullable: false, defaultValue: "{}"),
                     activa = table.Column<bool>(type: "boolean", nullable: false),
+                    estado = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false, defaultValue: "en_configuracion"),
+                    fecha_activacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     creado_en = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     actualizado_en = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -705,10 +709,10 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 columns: new[] { "id", "creado_en", "descripcion", "es_sistema", "nombre" },
                 values: new object[,]
                 {
-                    { 1L, new DateTime(2026, 6, 27, 18, 17, 10, 148, DateTimeKind.Utc).AddTicks(1019), "Superadministrador del sistema Legacy Barber", true, "superadmin" },
-                    { 2L, new DateTime(2026, 6, 27, 18, 17, 10, 148, DateTimeKind.Utc).AddTicks(1024), "Administrador de la barbería", true, "admin" },
-                    { 3L, new DateTime(2026, 6, 27, 18, 17, 10, 148, DateTimeKind.Utc).AddTicks(1025), "Barbero que atiende citas", true, "barbero" },
-                    { 4L, new DateTime(2026, 6, 27, 18, 17, 10, 148, DateTimeKind.Utc).AddTicks(1026), "Cliente que agenda citas", true, "cliente" }
+                    { 1L, new DateTime(2026, 7, 2, 14, 38, 56, 938, DateTimeKind.Utc).AddTicks(356), "Superadministrador del sistema Legacy Barber", true, "superadmin" },
+                    { 2L, new DateTime(2026, 7, 2, 14, 38, 56, 938, DateTimeKind.Utc).AddTicks(362), "Administrador de la barbería", true, "admin" },
+                    { 3L, new DateTime(2026, 7, 2, 14, 38, 56, 938, DateTimeKind.Utc).AddTicks(363), "Barbero que atiende citas", true, "barbero" },
+                    { 4L, new DateTime(2026, 7, 2, 14, 38, 56, 938, DateTimeKind.Utc).AddTicks(363), "Cliente que agenda citas", true, "cliente" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -736,6 +740,12 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 name: "ix_barberias_logo_id",
                 table: "barberias",
                 column: "logo_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_barberias_slug",
+                table: "barberias",
+                column: "slug",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_barbero_servicios_barbero_id_servicio_id",
@@ -810,8 +820,7 @@ namespace LegacyBarber.App.DataAccess.Migrations
             migrationBuilder.CreateIndex(
                 name: "ix_clientes_usuario_id",
                 table: "clientes",
-                column: "usuario_id",
-                unique: true);
+                column: "usuario_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_configuraciones_barberia_id_clave",

@@ -1,4 +1,5 @@
 ﻿using LegacyBarber.App.Core.Model.Identity;
+using LegacyBarber.App.Domain.Entities;
 
 namespace LegacyBarber.App.Core.Interfaces.Identity
 {
@@ -12,9 +13,26 @@ namespace LegacyBarber.App.Core.Interfaces.Identity
         /// </summary>
         /// <param name="request">The login credentials.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>The token pair if authentication succeeds.</returns>
+        /// <returns>The authentication response including tokens and associated barbershops.</returns>
         /// <exception cref="UnauthorizedAccessException">Thrown when credentials are invalid.</exception>
-        Task<TokenPairModel> LoginAsync(LoginModel request, CancellationToken cancellationToken = default);
+        Task<LoginResponseModel> LoginAsync(LoginModel request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Registers a new customer account.
+        /// </summary>
+        /// <param name="request">The registration data.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>The created user model.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when the email is already in use.</exception>
+        Task<UsuarioModel> RegisterAsync(RegistrarClienteModel request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Builds a full login response for an existing user, including fresh tokens.
+        /// </summary>
+        /// <param name="user">The authenticated user.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>A login response with tokens and associated barbershops.</returns>
+        Task<LoginResponseModel> BuildLoginResponseAsync(Usuario user, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Exchanges a refresh token for a new access token and rotates the refresh token.

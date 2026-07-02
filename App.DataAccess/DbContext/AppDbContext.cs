@@ -71,9 +71,11 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Barberia>(entity =>
             {
+                entity.HasIndex(b => b.Slug).IsUnique();
                 entity.HasIndex(b => b.Email).IsUnique();
                 entity.Property(b => b.HorarioAtencion).HasColumnType("jsonb").HasDefaultValue("{}");
                 entity.Property(b => b.Configuracion).HasColumnType("jsonb").HasDefaultValue("{}");
+                entity.Property(b => b.Estado).HasMaxLength(50).HasDefaultValue(EstadoBarberia.EnConfiguracion);
 
                 entity.HasOne(b => b.Logo).WithMany().HasForeignKey(b => b.LogoId).OnDelete(DeleteBehavior.SetNull);
             });
@@ -122,11 +124,10 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Cliente>(entity =>
             {
-                entity.HasIndex(c => c.UsuarioId).IsUnique();
                 entity.HasIndex(c => new { c.BarberiaId, c.UsuarioId }).IsUnique();
                 entity.Property(c => c.Preferencias).HasColumnType("jsonb").HasDefaultValue("{}");
 
-                entity.HasOne(c => c.Usuario).WithOne(u => u.Cliente).HasForeignKey<Cliente>(c => c.UsuarioId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(c => c.Usuario).WithMany(u => u.Clientes).HasForeignKey(c => c.UsuarioId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(c => c.Barberia).WithMany(b => b.Clientes).HasForeignKey(c => c.BarberiaId).OnDelete(DeleteBehavior.Cascade);
             });
         }

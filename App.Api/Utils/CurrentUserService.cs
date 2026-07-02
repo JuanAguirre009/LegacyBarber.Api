@@ -21,7 +21,21 @@ namespace LegacyBarber.App.Api.Utils
 
         public string NombreCompleto => User.Identity?.Name ?? "Anonymous";
 
-        public long? BarberiaId => long.TryParse(User.FindFirst("barberia_id")?.Value, out long id) ? id : null;
+        public long? BarberiaId
+        {
+            get
+            {
+                HttpContext? context = httpContextAccessor.HttpContext;
+                if (context != null &&
+                    context.Request.Headers.TryGetValue("X-Barberia-Id", out Microsoft.Extensions.Primitives.StringValues headerValue) &&
+                    long.TryParse(headerValue.FirstOrDefault(), out long headerBarberiaId))
+                {
+                    return headerBarberiaId;
+                }
+
+                return long.TryParse(User.FindFirst("barberia_id")?.Value, out long claimBarberiaId) ? claimBarberiaId : null;
+            }
+        }
 
         public IReadOnlyCollection<string> Roles => User.FindAll(ClaimTypes.Role)
             .Select(c => c.Value)

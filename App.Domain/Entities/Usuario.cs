@@ -23,7 +23,7 @@
 
         public Barberia? Barberia { get; set; }
         public Archivo? Foto { get; set; }
-        public Cliente? Cliente { get; set; }
+        public ICollection<Cliente> Clientes { get; set; } = new List<Cliente>();
         public Barbero? Barbero { get; set; }
         public ICollection<UsuarioRol> UsuarioRoles => usuarioRoles;
         public IReadOnlyCollection<string> Roles => usuarioRoles.Select(ur => ur.Rol.Nombre).ToList().AsReadOnly();
