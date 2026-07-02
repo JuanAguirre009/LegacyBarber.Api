@@ -64,6 +64,7 @@ namespace LegacyBarber.App.Api.Data
                 "Administrador del Sistema",
                 barberiaId: null);
 
+            superAdmin.EmailVerificado = true;
             superAdmin.AddRole(rolSuperAdmin);
 
             await context.Usuarios.AddAsync(superAdmin, cancellationToken);

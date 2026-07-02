@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace LegacyBarber.App.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/usuarios")]
     [Authorize(Roles = ApplicationRoles.SuperAdmin)]
-    public class UsersController : ControllerBase
+    public class UsuariosController : ControllerBase
     {
         private readonly IUsuarioService usuarioService;
 
-        public UsersController(IUsuarioService usuarioService)
+        public UsuariosController(IUsuarioService usuarioService)
         {
             this.usuarioService = usuarioService;
         }

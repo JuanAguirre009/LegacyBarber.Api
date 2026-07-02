@@ -12,5 +12,6 @@ namespace LegacyBarber.App.Core.Model.Identity
         public long? BarberiaId { get; set; }
         public bool Activo { get; set; }
         public ICollection<string> Roles { get; set; } = new List<string>();
+        public ICollection<BarberiaResumenModel> Barberias { get; set; } = new List<BarberiaResumenModel>();
     }
 }

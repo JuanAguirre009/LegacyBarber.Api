@@ -1,3 +1,4 @@
+using LegacyBarber.App.Api.Security;
 using LegacyBarber.App.Core.Interfaces.Identity;
 using LegacyBarber.App.Core.Model.Identity;
 using LegacyBarber.App.Core.Services.ClienteService;
@@ -8,7 +9,7 @@ namespace LegacyBarber.App.Api.Controllers
 {
     [ApiController]
     [Route("api/clientes")]
-    [Authorize]
+    [Authorize(Roles = ApplicationRoles.Cliente)]
     public class ClientesController : ControllerBase
     {
         private readonly IClienteService clienteService;

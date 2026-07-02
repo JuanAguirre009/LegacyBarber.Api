@@ -49,6 +49,10 @@ namespace LegacyBarber.App.Core.Services.Identity
         {
             ArgumentNullException.ThrowIfNull(model);
 
+            Usuario? existing = await usuarioRepository.GetByEmailAsync(model.Email, cancellationToken);
+            if (existing is not null)
+                throw new InvalidOperationException("El email ya está registrado.");
+
             string passwordHash = passwordHasher.HashPassword(model.Password);
             Usuario user = Usuario.Create(
                 model.Email,
@@ -126,7 +130,21 @@ namespace LegacyBarber.App.Core.Services.Identity
                 Telefono = user.Telefono,
                 BarberiaId = user.BarberiaId,
                 Activo = user.Activo,
-                Roles = user.Roles.ToList()
+                Roles = user.Roles.ToList(),
+                Barberias = user.Clientes
+                    .Where(c => c.Barberia != null)
+                    .Select(c => new BarberiaResumenModel
+                    {
+                        Id = c.Barberia!.Id,
+                        Nombre = c.Barberia.Nombre,
+                        Slug = c.Barberia.Slug,
+                        Direccion = c.Barberia.Direccion,
+                        Ciudad = c.Barberia.Ciudad,
+                        Telefono = c.Barberia.Telefono,
+                        HorarioAtencion = c.Barberia.HorarioAtencion,
+                        LogoId = c.Barberia.LogoId
+                    })
+                    .ToList()
             };
         }
     }

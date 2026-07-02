@@ -145,7 +145,8 @@ namespace LegacyBarber.App.Core.Services.Identity
                 Telefono = user.Telefono,
                 BarberiaId = user.BarberiaId,
                 Activo = user.Activo,
-                Roles = user.Roles.ToList()
+                Roles = user.Roles.ToList(),
+                Barberias = MapBarberias(user.Clientes)
             };
         }
 
