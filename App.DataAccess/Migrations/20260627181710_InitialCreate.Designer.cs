@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LegacyBarber.App.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260627163411_InitialCreate")]
+    [Migration("20260627181710_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -30,7 +30,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
@@ -62,7 +63,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
 
                     b.Property<string>("Ruta")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("ruta");
 
                     b.Property<long?>("TamanoBytes")
                         .HasColumnType("bigint")
@@ -72,9 +74,11 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnType("text")
                         .HasColumnName("tipo_mime");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_archivos");
 
-                    b.HasIndex("BarberiaId");
+                    b.HasIndex("BarberiaId")
+                        .HasDatabaseName("ix_archivos_barberia_id");
 
                     b.ToTable("archivos", (string)null);
                 });
@@ -83,13 +87,15 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Accion")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("accion");
 
                     b.Property<long>("BarberiaId")
                         .HasColumnType("bigint")
@@ -117,31 +123,37 @@ namespace LegacyBarber.App.DataAccess.Migrations
 
                     b.Property<string>("Tabla")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("tabla");
 
                     b.Property<long?>("UsuarioId")
                         .HasColumnType("bigint")
                         .HasColumnName("usuario_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_auditorias");
 
-                    b.HasIndex("BarberiaId");
+                    b.HasIndex("BarberiaId")
+                        .HasDatabaseName("ix_auditorias_barberia_id");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("UsuarioId")
+                        .HasDatabaseName("ix_auditorias_usuario_id");
 
-                    b.ToTable("auditoria", (string)null);
+                    b.ToTable("auditorias", (string)null);
                 });
 
             modelBuilder.Entity("LegacyBarber.App.Domain.Entities.Barberia", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<bool>("Activa")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("activa");
 
                     b.Property<DateTime?>("ActualizadoEn")
                         .HasColumnType("timestamp with time zone")
@@ -151,45 +163,55 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("jsonb")
-                        .HasDefaultValue("{}");
+                        .HasDefaultValue("{}")
+                        .HasColumnName("configuracion");
 
                     b.Property<DateTime>("CreadoEn")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("creado_en");
 
                     b.Property<string>("Direccion")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("direccion");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("email");
 
                     b.Property<string>("HorarioAtencion")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("jsonb")
-                        .HasDefaultValue("{}");
+                        .HasDefaultValue("{}")
+                        .HasColumnName("horario_atencion");
 
                     b.Property<long?>("LogoId")
                         .HasColumnType("bigint")
                         .HasColumnName("logo_id");
 
                     b.Property<string>("Nit")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nit");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nombre");
 
                     b.Property<string>("Telefono")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("telefono");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_barberias");
 
                     b.HasIndex("Email")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_barberias_email");
 
-                    b.HasIndex("LogoId");
+                    b.HasIndex("LogoId")
+                        .HasDatabaseName("ix_barberias_logo_id");
 
                     b.ToTable("barberias", (string)null);
                 });
@@ -198,12 +220,14 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("activo");
 
                     b.Property<short?>("AniosExperiencia")
                         .HasColumnType("smallint")
@@ -214,7 +238,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnName("barberia_id");
 
                     b.Property<string>("Biografia")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("biografia");
 
                     b.Property<decimal>("CalificacionPromedio")
                         .HasColumnType("numeric")
@@ -232,7 +257,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("jsonb")
-                        .HasDefaultValue("[]");
+                        .HasDefaultValue("[]")
+                        .HasColumnName("especialidades");
 
                     b.Property<int>("TotalResenas")
                         .HasColumnType("integer")
@@ -242,12 +268,15 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("usuario_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_barberos");
 
-                    b.HasIndex("BarberiaId");
+                    b.HasIndex("BarberiaId")
+                        .HasDatabaseName("ix_barberos_barberia_id");
 
                     b.HasIndex("UsuarioId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_barberos_usuario_id");
 
                     b.ToTable("barberos", (string)null);
                 });
@@ -256,12 +285,14 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("activo");
 
                     b.Property<long>("BarberoId")
                         .HasColumnType("bigint")
@@ -279,12 +310,15 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("servicio_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_barbero_servicios");
 
-                    b.HasIndex("ServicioId");
+                    b.HasIndex("ServicioId")
+                        .HasDatabaseName("ix_barbero_servicios_servicio_id");
 
                     b.HasIndex("BarberoId", "ServicioId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_barbero_servicios_barbero_id_servicio_id");
 
                     b.ToTable("barbero_servicios", (string)null);
                 });
@@ -293,12 +327,14 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<bool>("Activa")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("activa");
 
                     b.Property<long>("BarberiaId")
                         .HasColumnType("bigint")
@@ -309,19 +345,24 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnName("creado_en");
 
                     b.Property<string>("Descripcion")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("descripcion");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nombre");
 
                     b.Property<short>("Orden")
-                        .HasColumnType("smallint");
+                        .HasColumnType("smallint")
+                        .HasColumnName("orden");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_categorias_servicios");
 
                     b.HasIndex("BarberiaId", "Nombre")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_categorias_servicios_barberia_id_nombre");
 
                     b.ToTable("categorias_servicios", (string)null);
                 });
@@ -330,7 +371,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
@@ -371,7 +413,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnName("estado_cita_id");
 
                     b.Property<DateTime>("Fecha")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("fecha");
 
                     b.Property<TimeSpan>("HoraFin")
                         .HasColumnType("interval")
@@ -386,30 +429,39 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnName("motivo_cancelacion");
 
                     b.Property<string>("Notas")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("notas");
 
                     b.Property<string>("Origen")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("origen");
 
                     b.Property<bool>("Pagado")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("pagado");
 
                     b.Property<decimal>("PrecioTotal")
                         .HasColumnType("numeric")
                         .HasColumnName("precio_total");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_citas");
 
-                    b.HasIndex("BarberiaId");
+                    b.HasIndex("BarberiaId")
+                        .HasDatabaseName("ix_citas_barberia_id");
 
-                    b.HasIndex("CitaOriginalId");
+                    b.HasIndex("CitaOriginalId")
+                        .HasDatabaseName("ix_citas_cita_original_id");
 
-                    b.HasIndex("EstadoCitaId");
+                    b.HasIndex("EstadoCitaId")
+                        .HasDatabaseName("ix_citas_estado_cita_id");
 
-                    b.HasIndex("ClienteId", "Fecha");
+                    b.HasIndex("ClienteId", "Fecha")
+                        .HasDatabaseName("ix_citas_cliente_id_fecha");
 
-                    b.HasIndex("BarberoId", "Fecha", "HoraInicio");
+                    b.HasIndex("BarberoId", "Fecha", "HoraInicio")
+                        .HasDatabaseName("ix_citas_barbero_id_fecha_hora_inicio");
 
                     b.ToTable("citas", null, t =>
                         {
@@ -421,7 +473,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
@@ -445,12 +498,15 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("servicio_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_cita_servicios");
 
-                    b.HasIndex("ServicioId");
+                    b.HasIndex("ServicioId")
+                        .HasDatabaseName("ix_cita_servicios_servicio_id");
 
                     b.HasIndex("CitaId", "ServicioId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_cita_servicios_cita_id_servicio_id");
 
                     b.ToTable("cita_servicios", (string)null);
                 });
@@ -459,7 +515,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
@@ -476,25 +533,30 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnName("fecha_nacimiento");
 
                     b.Property<string>("Notas")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("notas");
 
                     b.Property<string>("Preferencias")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("jsonb")
-                        .HasDefaultValue("{}");
+                        .HasDefaultValue("{}")
+                        .HasColumnName("preferencias");
 
                     b.Property<long>("UsuarioId")
                         .HasColumnType("bigint")
                         .HasColumnName("usuario_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_clientes");
 
                     b.HasIndex("UsuarioId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_clientes_usuario_id");
 
                     b.HasIndex("BarberiaId", "UsuarioId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_clientes_barberia_id_usuario_id");
 
                     b.ToTable("clientes", (string)null);
                 });
@@ -503,7 +565,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
@@ -517,16 +580,20 @@ namespace LegacyBarber.App.DataAccess.Migrations
 
                     b.Property<string>("Clave")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("clave");
 
                     b.Property<string>("Valor")
                         .IsRequired()
-                        .HasColumnType("jsonb");
+                        .HasColumnType("jsonb")
+                        .HasColumnName("valor");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_configuraciones");
 
                     b.HasIndex("BarberiaId", "Clave")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_configuraciones_barberia_id_clave");
 
                     b.ToTable("configuraciones", (string)null);
                 });
@@ -535,24 +602,30 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Color")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("color");
 
                     b.Property<string>("Descripcion")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("descripcion");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nombre");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_estados_cita");
 
                     b.HasIndex("Nombre")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_estados_cita_nombre");
 
                     b.ToTable("estados_cita", (string)null);
 
@@ -626,7 +699,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
@@ -639,7 +713,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnName("esta_disponible");
 
                     b.Property<DateTime>("Fecha")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("fecha");
 
                     b.Property<TimeSpan?>("HoraFin")
                         .HasColumnType("interval")
@@ -650,12 +725,15 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnName("hora_inicio");
 
                     b.Property<string>("Motivo")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("motivo");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_excepciones_horarios");
 
                     b.HasIndex("BarberoId", "Fecha")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_excepciones_horarios_barbero_id_fecha");
 
                     b.ToTable("excepciones_horarios", (string)null);
                 });
@@ -664,12 +742,14 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("activo");
 
                     b.Property<long>("BarberoId")
                         .HasColumnType("bigint")
@@ -691,10 +771,12 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnType("interval")
                         .HasColumnName("hora_inicio");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_horarios_barberos");
 
                     b.HasIndex("BarberoId", "DiaSemana", "HoraInicio")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_horarios_barberos_barbero_id_dia_semana_hora_inicio");
 
                     b.ToTable("horarios_barberos", (string)null);
                 });
@@ -703,12 +785,14 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("activo");
 
                     b.Property<long>("BarberiaId")
                         .HasColumnType("bigint")
@@ -716,22 +800,27 @@ namespace LegacyBarber.App.DataAccess.Migrations
 
                     b.Property<string>("Codigo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("codigo");
 
                     b.Property<string>("Configuracion")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("jsonb")
-                        .HasDefaultValue("{}");
+                        .HasDefaultValue("{}")
+                        .HasColumnName("configuracion");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nombre");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_metodos_pago");
 
                     b.HasIndex("BarberiaId", "Codigo")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_metodos_pago_barberia_id_codigo");
 
                     b.ToTable("metodos_pago", (string)null);
                 });
@@ -740,13 +829,15 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Asunto")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("asunto");
 
                     b.Property<long>("BarberiaId")
                         .HasColumnType("bigint")
@@ -754,11 +845,13 @@ namespace LegacyBarber.App.DataAccess.Migrations
 
                     b.Property<string>("Canal")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("canal");
 
                     b.Property<string>("Contenido")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("contenido");
 
                     b.Property<DateTime>("CreadoEn")
                         .HasColumnType("timestamp with time zone")
@@ -768,7 +861,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("jsonb")
-                        .HasDefaultValue("{}");
+                        .HasDefaultValue("{}")
+                        .HasColumnName("datos");
 
                     b.Property<DateTime?>("EnviadaEn")
                         .HasColumnType("timestamp with time zone")
@@ -785,17 +879,21 @@ namespace LegacyBarber.App.DataAccess.Migrations
 
                     b.Property<string>("Tipo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("tipo");
 
                     b.Property<long>("UsuarioId")
                         .HasColumnType("bigint")
                         .HasColumnName("usuario_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_notificaciones");
 
-                    b.HasIndex("BarberiaId");
+                    b.HasIndex("BarberiaId")
+                        .HasDatabaseName("ix_notificaciones_barberia_id");
 
                     b.HasIndex("UsuarioId", "Estado")
+                        .HasDatabaseName("ix_notificaciones_usuario_id_estado")
                         .HasFilter("\"estado\" = 'pendiente'");
 
                     b.ToTable("notificaciones", (string)null);
@@ -805,7 +903,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
@@ -816,9 +915,6 @@ namespace LegacyBarber.App.DataAccess.Migrations
                     b.Property<long>("BarberiaId")
                         .HasColumnType("bigint")
                         .HasColumnName("barberia_id");
-
-                    b.Property<long?>("BarberoId")
-                        .HasColumnType("bigint");
 
                     b.Property<long>("CitaId")
                         .HasColumnType("bigint")
@@ -841,14 +937,16 @@ namespace LegacyBarber.App.DataAccess.Migrations
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("estado");
 
                     b.Property<long>("MetodoPagoId")
                         .HasColumnType("bigint")
                         .HasColumnName("metodo_pago_id");
 
                     b.Property<decimal>("Monto")
-                        .HasColumnType("numeric");
+                        .HasColumnType("numeric")
+                        .HasColumnName("monto");
 
                     b.Property<DateTime?>("PagadoEn")
                         .HasColumnType("timestamp with time zone")
@@ -870,19 +968,23 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnType("text")
                         .HasColumnName("transaction_id_externo");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_pagos");
 
-                    b.HasIndex("BarberiaId");
+                    b.HasIndex("BarberiaId")
+                        .HasDatabaseName("ix_pagos_barberia_id");
 
-                    b.HasIndex("BarberoId");
+                    b.HasIndex("CitaId")
+                        .HasDatabaseName("ix_pagos_cita_id");
 
-                    b.HasIndex("CitaId");
+                    b.HasIndex("ClienteId")
+                        .HasDatabaseName("ix_pagos_cliente_id");
 
-                    b.HasIndex("ClienteId");
+                    b.HasIndex("MetodoPagoId")
+                        .HasDatabaseName("ix_pagos_metodo_pago_id");
 
-                    b.HasIndex("MetodoPagoId");
-
-                    b.HasIndex("RegistradoPor");
+                    b.HasIndex("RegistradoPor")
+                        .HasDatabaseName("ix_pagos_registrado_por");
 
                     b.ToTable("pagos", (string)null);
                 });
@@ -891,7 +993,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
@@ -900,7 +1003,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnName("barbero_id");
 
                     b.Property<short>("Calificacion")
-                        .HasColumnType("smallint");
+                        .HasColumnType("smallint")
+                        .HasColumnName("calificacion");
 
                     b.Property<long>("CitaId")
                         .HasColumnType("bigint")
@@ -911,23 +1015,29 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnName("cliente_id");
 
                     b.Property<string>("Comentario")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("comentario");
 
                     b.Property<DateTime>("CreadoEn")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("creado_en");
 
                     b.Property<bool>("Visible")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("visible");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_resenas");
 
-                    b.HasIndex("BarberoId");
+                    b.HasIndex("BarberoId")
+                        .HasDatabaseName("ix_resenas_barbero_id");
 
                     b.HasIndex("CitaId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_resenas_cita_id");
 
-                    b.HasIndex("ClienteId");
+                    b.HasIndex("ClienteId")
+                        .HasDatabaseName("ix_resenas_cliente_id");
 
                     b.ToTable("resenas", (string)null);
                 });
@@ -936,7 +1046,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
@@ -945,19 +1056,24 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnName("creado_en");
 
                     b.Property<string>("Descripcion")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("descripcion");
 
                     b.Property<bool>("EsSistema")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("es_sistema");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nombre");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_roles");
 
                     b.HasIndex("Nombre")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_roles_nombre");
 
                     b.ToTable("roles", (string)null);
 
@@ -965,7 +1081,7 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         new
                         {
                             Id = 1L,
-                            CreadoEn = new DateTime(2026, 6, 27, 16, 34, 11, 206, DateTimeKind.Utc).AddTicks(5644),
+                            CreadoEn = new DateTime(2026, 6, 27, 18, 17, 10, 148, DateTimeKind.Utc).AddTicks(1019),
                             Descripcion = "Superadministrador del sistema Legacy Barber",
                             EsSistema = true,
                             Nombre = "superadmin"
@@ -973,7 +1089,7 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         new
                         {
                             Id = 2L,
-                            CreadoEn = new DateTime(2026, 6, 27, 16, 34, 11, 206, DateTimeKind.Utc).AddTicks(5647),
+                            CreadoEn = new DateTime(2026, 6, 27, 18, 17, 10, 148, DateTimeKind.Utc).AddTicks(1024),
                             Descripcion = "Administrador de la barbería",
                             EsSistema = true,
                             Nombre = "admin"
@@ -981,7 +1097,7 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         new
                         {
                             Id = 3L,
-                            CreadoEn = new DateTime(2026, 6, 27, 16, 34, 11, 206, DateTimeKind.Utc).AddTicks(5648),
+                            CreadoEn = new DateTime(2026, 6, 27, 18, 17, 10, 148, DateTimeKind.Utc).AddTicks(1025),
                             Descripcion = "Barbero que atiende citas",
                             EsSistema = true,
                             Nombre = "barbero"
@@ -989,7 +1105,7 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         new
                         {
                             Id = 4L,
-                            CreadoEn = new DateTime(2026, 6, 27, 16, 34, 11, 206, DateTimeKind.Utc).AddTicks(5648),
+                            CreadoEn = new DateTime(2026, 6, 27, 18, 17, 10, 148, DateTimeKind.Utc).AddTicks(1026),
                             Descripcion = "Cliente que agenda citas",
                             EsSistema = true,
                             Nombre = "cliente"
@@ -1000,12 +1116,14 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("activo");
 
                     b.Property<DateTime?>("ActualizadoEn")
                         .HasColumnType("timestamp with time zone")
@@ -1020,14 +1138,16 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnName("categoria_id");
 
                     b.Property<string>("Color")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("color");
 
                     b.Property<DateTime>("CreadoEn")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("creado_en");
 
                     b.Property<string>("Descripcion")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("descripcion");
 
                     b.Property<short>("DuracionMinutos")
                         .HasColumnType("smallint")
@@ -1039,19 +1159,25 @@ namespace LegacyBarber.App.DataAccess.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nombre");
 
                     b.Property<decimal>("Precio")
-                        .HasColumnType("numeric");
+                        .HasColumnType("numeric")
+                        .HasColumnName("precio");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_servicios");
 
-                    b.HasIndex("CategoriaId");
+                    b.HasIndex("CategoriaId")
+                        .HasDatabaseName("ix_servicios_categoria_id");
 
-                    b.HasIndex("ImagenId");
+                    b.HasIndex("ImagenId")
+                        .HasDatabaseName("ix_servicios_imagen_id");
 
                     b.HasIndex("BarberiaId", "Nombre")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_servicios_barberia_id_nombre");
 
                     b.ToTable("servicios", (string)null);
                 });
@@ -1060,7 +1186,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
@@ -1078,18 +1205,22 @@ namespace LegacyBarber.App.DataAccess.Migrations
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("token");
 
                     b.Property<long>("UsuarioId")
                         .HasColumnType("bigint")
                         .HasColumnName("usuario_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_tokens_refresco");
 
                     b.HasIndex("Token")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_tokens_refresco_token");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("UsuarioId")
+                        .HasDatabaseName("ix_tokens_refresco_usuario_id");
 
                     b.ToTable("tokens_refresco", (string)null);
                 });
@@ -1098,12 +1229,14 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("activo");
 
                     b.Property<DateTime?>("ActualizadoEn")
                         .HasColumnType("timestamp with time zone")
@@ -1119,7 +1252,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("citext");
+                        .HasColumnType("citext")
+                        .HasColumnName("email");
 
                     b.Property<bool>("EmailVerificado")
                         .HasColumnType("boolean")
@@ -1136,21 +1270,29 @@ namespace LegacyBarber.App.DataAccess.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("password_hash");
 
                     b.Property<string>("Telefono")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("telefono");
 
                     b.Property<DateTime?>("UltimoAcceso")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("ultimo_acceso");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_usuarios");
 
-                    b.HasIndex("FotoId");
+                    b.HasIndex("BarberiaId")
+                        .HasDatabaseName("ix_usuarios_barberia_id");
 
-                    b.HasIndex("BarberiaId", "Email")
-                        .IsUnique();
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("ix_usuarios_email");
+
+                    b.HasIndex("FotoId")
+                        .HasDatabaseName("ix_usuarios_foto_id");
 
                     b.ToTable("usuarios", (string)null);
                 });
@@ -1159,7 +1301,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
@@ -1168,17 +1311,22 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .HasColumnName("creado_en");
 
                     b.Property<long>("RolId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("rol_id");
 
                     b.Property<long>("UsuarioId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("usuario_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_usuario_roles");
 
-                    b.HasIndex("RolId");
+                    b.HasIndex("RolId")
+                        .HasDatabaseName("ix_usuario_roles_rol_id");
 
                     b.HasIndex("UsuarioId", "RolId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_usuario_roles_usuario_id_rol_id");
 
                     b.ToTable("usuario_roles", (string)null);
                 });
@@ -1189,7 +1337,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("Archivos")
                         .HasForeignKey("BarberiaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_archivos_barberias_barberia_id");
 
                     b.Navigation("Barberia");
                 });
@@ -1200,12 +1349,14 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("Auditorias")
                         .HasForeignKey("BarberiaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_auditorias_barberias_barberia_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_auditorias_usuarios_usuario_id");
 
                     b.Navigation("Barberia");
 
@@ -1217,7 +1368,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                     b.HasOne("LegacyBarber.App.Domain.Entities.Archivo", "Logo")
                         .WithMany()
                         .HasForeignKey("LogoId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_barberias_archivos_logo_id");
 
                     b.Navigation("Logo");
                 });
@@ -1228,13 +1380,15 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("Barberos")
                         .HasForeignKey("BarberiaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_barberos_barberias_barberia_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Usuario", "Usuario")
                         .WithOne("Barbero")
                         .HasForeignKey("LegacyBarber.App.Domain.Entities.Barbero", "UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_barberos_usuarios_usuario_id");
 
                     b.Navigation("Barberia");
 
@@ -1247,13 +1401,15 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("BarberoServicios")
                         .HasForeignKey("BarberoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_barbero_servicios_barberos_barbero_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Servicio", "Servicio")
                         .WithMany("BarberoServicios")
                         .HasForeignKey("ServicioId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_barbero_servicios_servicios_servicio_id");
 
                     b.Navigation("Barbero");
 
@@ -1266,7 +1422,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("CategoriasServicios")
                         .HasForeignKey("BarberiaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_categorias_servicios_barberias_barberia_id");
 
                     b.Navigation("Barberia");
                 });
@@ -1277,30 +1434,35 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("Citas")
                         .HasForeignKey("BarberiaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_citas_barberias_barberia_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Barbero", "Barbero")
                         .WithMany("Citas")
                         .HasForeignKey("BarberoId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_citas_barberos_barbero_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Cita", "CitaOriginal")
                         .WithMany("Reprogramaciones")
                         .HasForeignKey("CitaOriginalId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_citas_citas_cita_original_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Cliente", "Cliente")
                         .WithMany("Citas")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_citas_clientes_cliente_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.EstadoCita", "EstadoCita")
                         .WithMany("Citas")
                         .HasForeignKey("EstadoCitaId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_citas_estados_cita_estado_cita_id");
 
                     b.Navigation("Barberia");
 
@@ -1319,13 +1481,15 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("CitaServicios")
                         .HasForeignKey("CitaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_cita_servicios_citas_cita_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Servicio", "Servicio")
                         .WithMany("CitaServicios")
                         .HasForeignKey("ServicioId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_cita_servicios_servicios_servicio_id");
 
                     b.Navigation("Cita");
 
@@ -1338,13 +1502,15 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("Clientes")
                         .HasForeignKey("BarberiaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_clientes_barberias_barberia_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Usuario", "Usuario")
                         .WithOne("Cliente")
                         .HasForeignKey("LegacyBarber.App.Domain.Entities.Cliente", "UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_clientes_usuarios_usuario_id");
 
                     b.Navigation("Barberia");
 
@@ -1357,7 +1523,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("Configuraciones")
                         .HasForeignKey("BarberiaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_configuraciones_barberias_barberia_id");
 
                     b.Navigation("Barberia");
                 });
@@ -1368,7 +1535,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("ExcepcionesHorarios")
                         .HasForeignKey("BarberoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_excepciones_horarios_barberos_barbero_id");
 
                     b.Navigation("Barbero");
                 });
@@ -1379,7 +1547,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("Horarios")
                         .HasForeignKey("BarberoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_horarios_barberos_barberos_barbero_id");
 
                     b.Navigation("Barbero");
                 });
@@ -1390,7 +1559,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("MetodosPago")
                         .HasForeignKey("BarberiaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_metodos_pago_barberias_barberia_id");
 
                     b.Navigation("Barberia");
                 });
@@ -1401,13 +1571,15 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("Notificaciones")
                         .HasForeignKey("BarberiaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_notificaciones_barberias_barberia_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_notificaciones_usuarios_usuario_id");
 
                     b.Navigation("Barberia");
 
@@ -1420,34 +1592,35 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("Pagos")
                         .HasForeignKey("BarberiaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LegacyBarber.App.Domain.Entities.Barbero", null)
-                        .WithMany("Pagos")
-                        .HasForeignKey("BarberoId");
+                        .IsRequired()
+                        .HasConstraintName("fk_pagos_barberias_barberia_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Cita", "Cita")
                         .WithMany("Pagos")
                         .HasForeignKey("CitaId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_pagos_citas_cita_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Cliente", "Cliente")
                         .WithMany("Pagos")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_pagos_clientes_cliente_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.MetodoPago", "MetodoPago")
                         .WithMany("Pagos")
                         .HasForeignKey("MetodoPagoId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_pagos_metodos_pago_metodo_pago_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Usuario", "UsuarioRegistrador")
                         .WithMany()
                         .HasForeignKey("RegistradoPor")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_pagos_usuarios_registrado_por");
 
                     b.Navigation("Barberia");
 
@@ -1466,19 +1639,22 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("Resenas")
                         .HasForeignKey("BarberoId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_resenas_barberos_barbero_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Cita", "Cita")
                         .WithOne("Resena")
                         .HasForeignKey("LegacyBarber.App.Domain.Entities.Resena", "CitaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_resenas_citas_cita_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Cliente", "Cliente")
                         .WithMany("Resenas")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_resenas_clientes_cliente_id");
 
                     b.Navigation("Barbero");
 
@@ -1493,17 +1669,20 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("Servicios")
                         .HasForeignKey("BarberiaId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_servicios_barberias_barberia_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.CategoriaServicio", "Categoria")
                         .WithMany("Servicios")
                         .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_servicios_categorias_servicios_categoria_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Archivo", "Imagen")
                         .WithMany()
                         .HasForeignKey("ImagenId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_servicios_archivos_imagen_id");
 
                     b.Navigation("Barberia");
 
@@ -1518,7 +1697,8 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("TokensRefresco")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_tokens_refresco_usuarios_usuario_id");
 
                     b.Navigation("Usuario");
                 });
@@ -1528,12 +1708,14 @@ namespace LegacyBarber.App.DataAccess.Migrations
                     b.HasOne("LegacyBarber.App.Domain.Entities.Barberia", "Barberia")
                         .WithMany("Usuarios")
                         .HasForeignKey("BarberiaId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_usuarios_barberias_barberia_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Archivo", "Foto")
                         .WithMany()
                         .HasForeignKey("FotoId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_usuarios_archivos_foto_id");
 
                     b.Navigation("Barberia");
 
@@ -1546,13 +1728,15 @@ namespace LegacyBarber.App.DataAccess.Migrations
                         .WithMany("UsuarioRoles")
                         .HasForeignKey("RolId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_usuario_roles_roles_rol_id");
 
                     b.HasOne("LegacyBarber.App.Domain.Entities.Usuario", "Usuario")
                         .WithMany("UsuarioRoles")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_usuario_roles_usuarios_usuario_id");
 
                     b.Navigation("Rol");
 
@@ -1595,8 +1779,6 @@ namespace LegacyBarber.App.DataAccess.Migrations
                     b.Navigation("ExcepcionesHorarios");
 
                     b.Navigation("Horarios");
-
-                    b.Navigation("Pagos");
 
                     b.Navigation("Resenas");
                 });

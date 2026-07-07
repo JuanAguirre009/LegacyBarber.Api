@@ -71,13 +71,9 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Barberia>(entity =>
             {
-                entity.ToTable("barberias");
                 entity.HasIndex(b => b.Email).IsUnique();
                 entity.Property(b => b.HorarioAtencion).HasColumnType("jsonb").HasDefaultValue("{}");
                 entity.Property(b => b.Configuracion).HasColumnType("jsonb").HasDefaultValue("{}");
-                entity.Property(b => b.LogoId).HasColumnName("logo_id");
-                entity.Property(b => b.CreadoEn).HasColumnName("creado_en");
-                entity.Property(b => b.ActualizadoEn).HasColumnName("actualizado_en");
 
                 entity.HasOne(b => b.Logo).WithMany().HasForeignKey(b => b.LogoId).OnDelete(DeleteBehavior.SetNull);
             });
@@ -87,16 +83,6 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Archivo>(entity =>
             {
-                entity.ToTable("archivos");
-                entity.Property(a => a.BarberiaId).HasColumnName("barberia_id");
-                entity.Property(a => a.NombreOriginal).HasColumnName("nombre_original");
-                entity.Property(a => a.NombreAlmacenado).HasColumnName("nombre_almacenado");
-                entity.Property(a => a.TipoMime).HasColumnName("tipo_mime");
-                entity.Property(a => a.TamanoBytes).HasColumnName("tamano_bytes");
-                entity.Property(a => a.EntidadTipo).HasColumnName("entidad_tipo");
-                entity.Property(a => a.EntidadId).HasColumnName("entidad_id");
-                entity.Property(a => a.CreadoEn).HasColumnName("creado_en");
-
                 entity.HasOne(a => a.Barberia).WithMany(b => b.Archivos).HasForeignKey(a => a.BarberiaId).OnDelete(DeleteBehavior.Cascade);
             });
         }
@@ -105,9 +91,7 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Rol>(entity =>
             {
-                entity.ToTable("roles");
                 entity.HasIndex(r => r.Nombre).IsUnique();
-                entity.Property(r => r.CreadoEn).HasColumnName("creado_en");
             });
         }
 
@@ -115,16 +99,8 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Usuario>(entity =>
             {
-                entity.ToTable("usuarios");
-                entity.HasIndex(u => new { u.BarberiaId, u.Email }).IsUnique();
+                entity.HasIndex(u => u.Email).IsUnique();
                 entity.Property(u => u.Email).HasColumnType("citext");
-                entity.Property(u => u.CreadoEn).HasColumnName("creado_en");
-                entity.Property(u => u.ActualizadoEn).HasColumnName("actualizado_en");
-                entity.Property(u => u.UltimoAcceso).HasColumnName("ultimo_acceso");
-                entity.Property(u => u.EmailVerificado).HasColumnName("email_verificado");
-                entity.Property(u => u.NombreCompleto).HasColumnName("nombre_completo");
-                entity.Property(u => u.BarberiaId).HasColumnName("barberia_id");
-                entity.Property(u => u.FotoId).HasColumnName("foto_id");
 
                 entity.HasOne(u => u.Barberia).WithMany(b => b.Usuarios).HasForeignKey(u => u.BarberiaId).OnDelete(DeleteBehavior.SetNull);
                 entity.HasOne(u => u.Foto).WithMany().HasForeignKey(u => u.FotoId).OnDelete(DeleteBehavior.SetNull);
@@ -135,9 +111,7 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<UsuarioRol>(entity =>
             {
-                entity.ToTable("usuario_roles");
                 entity.HasIndex(ur => new { ur.UsuarioId, ur.RolId }).IsUnique();
-                entity.Property(ur => ur.CreadoEn).HasColumnName("creado_en");
 
                 entity.HasOne(ur => ur.Usuario).WithMany(u => u.UsuarioRoles).HasForeignKey(ur => ur.UsuarioId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(ur => ur.Rol).WithMany(r => r.UsuarioRoles).HasForeignKey(ur => ur.RolId).OnDelete(DeleteBehavior.Cascade);
@@ -148,14 +122,9 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Cliente>(entity =>
             {
-                entity.ToTable("clientes");
                 entity.HasIndex(c => c.UsuarioId).IsUnique();
                 entity.HasIndex(c => new { c.BarberiaId, c.UsuarioId }).IsUnique();
-                entity.Property(c => c.UsuarioId).HasColumnName("usuario_id");
-                entity.Property(c => c.BarberiaId).HasColumnName("barberia_id");
-                entity.Property(c => c.FechaNacimiento).HasColumnName("fecha_nacimiento");
                 entity.Property(c => c.Preferencias).HasColumnType("jsonb").HasDefaultValue("{}");
-                entity.Property(c => c.CreadoEn).HasColumnName("creado_en");
 
                 entity.HasOne(c => c.Usuario).WithOne(u => u.Cliente).HasForeignKey<Cliente>(c => c.UsuarioId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(c => c.Barberia).WithMany(b => b.Clientes).HasForeignKey(c => c.BarberiaId).OnDelete(DeleteBehavior.Cascade);
@@ -166,16 +135,8 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Barbero>(entity =>
             {
-                entity.ToTable("barberos");
                 entity.HasIndex(b => b.UsuarioId).IsUnique();
-                entity.Property(b => b.UsuarioId).HasColumnName("usuario_id");
-                entity.Property(b => b.BarberiaId).HasColumnName("barberia_id");
                 entity.Property(b => b.Especialidades).HasColumnType("jsonb").HasDefaultValue("[]");
-                entity.Property(b => b.AniosExperiencia).HasColumnName("anios_experiencia");
-                entity.Property(b => b.ComisionPorcentaje).HasColumnName("comision_porcentaje");
-                entity.Property(b => b.CalificacionPromedio).HasColumnName("calificacion_promedio");
-                entity.Property(b => b.TotalResenas).HasColumnName("total_resenas");
-                entity.Property(b => b.CreadoEn).HasColumnName("creado_en");
 
                 entity.HasOne(b => b.Usuario).WithOne(u => u.Barbero).HasForeignKey<Barbero>(b => b.UsuarioId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(b => b.Barberia).WithMany(ba => ba.Barberos).HasForeignKey(b => b.BarberiaId).OnDelete(DeleteBehavior.Cascade);
@@ -186,10 +147,7 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<CategoriaServicio>(entity =>
             {
-                entity.ToTable("categorias_servicios");
                 entity.HasIndex(c => new { c.BarberiaId, c.Nombre }).IsUnique();
-                entity.Property(c => c.BarberiaId).HasColumnName("barberia_id");
-                entity.Property(c => c.CreadoEn).HasColumnName("creado_en");
 
                 entity.HasOne(c => c.Barberia).WithMany(b => b.CategoriasServicios).HasForeignKey(c => c.BarberiaId).OnDelete(DeleteBehavior.Cascade);
             });
@@ -199,14 +157,7 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Servicio>(entity =>
             {
-                entity.ToTable("servicios");
                 entity.HasIndex(s => new { s.BarberiaId, s.Nombre }).IsUnique();
-                entity.Property(s => s.BarberiaId).HasColumnName("barberia_id");
-                entity.Property(s => s.CategoriaId).HasColumnName("categoria_id");
-                entity.Property(s => s.ImagenId).HasColumnName("imagen_id");
-                entity.Property(s => s.DuracionMinutos).HasColumnName("duracion_minutos");
-                entity.Property(s => s.CreadoEn).HasColumnName("creado_en");
-                entity.Property(s => s.ActualizadoEn).HasColumnName("actualizado_en");
 
                 entity.HasOne(s => s.Barberia).WithMany(b => b.Servicios).HasForeignKey(s => s.BarberiaId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(s => s.Categoria).WithMany(c => c.Servicios).HasForeignKey(s => s.CategoriaId).OnDelete(DeleteBehavior.SetNull);
@@ -218,12 +169,7 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<BarberoServicio>(entity =>
             {
-                entity.ToTable("barbero_servicios");
                 entity.HasIndex(bs => new { bs.BarberoId, bs.ServicioId }).IsUnique();
-                entity.Property(bs => bs.BarberoId).HasColumnName("barbero_id");
-                entity.Property(bs => bs.ServicioId).HasColumnName("servicio_id");
-                entity.Property(bs => bs.PrecioPersonalizado).HasColumnName("precio_personalizado");
-                entity.Property(bs => bs.CreadoEn).HasColumnName("creado_en");
 
                 entity.HasOne(bs => bs.Barbero).WithMany(b => b.BarberoServicios).HasForeignKey(bs => bs.BarberoId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(bs => bs.Servicio).WithMany(s => s.BarberoServicios).HasForeignKey(bs => bs.ServicioId).OnDelete(DeleteBehavior.Cascade);
@@ -234,13 +180,7 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<HorarioBarbero>(entity =>
             {
-                entity.ToTable("horarios_barberos");
                 entity.HasIndex(h => new { h.BarberoId, h.DiaSemana, h.HoraInicio }).IsUnique();
-                entity.Property(h => h.BarberoId).HasColumnName("barbero_id");
-                entity.Property(h => h.DiaSemana).HasColumnName("dia_semana");
-                entity.Property(h => h.HoraInicio).HasColumnName("hora_inicio");
-                entity.Property(h => h.HoraFin).HasColumnName("hora_fin");
-                entity.Property(h => h.CreadoEn).HasColumnName("creado_en");
 
                 entity.HasOne(h => h.Barbero).WithMany(b => b.Horarios).HasForeignKey(h => h.BarberoId).OnDelete(DeleteBehavior.Cascade);
             });
@@ -250,12 +190,7 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<ExcepcionHorario>(entity =>
             {
-                entity.ToTable("excepciones_horarios");
                 entity.HasIndex(e => new { e.BarberoId, e.Fecha }).IsUnique();
-                entity.Property(e => e.BarberoId).HasColumnName("barbero_id");
-                entity.Property(e => e.EstaDisponible).HasColumnName("esta_disponible");
-                entity.Property(e => e.HoraInicio).HasColumnName("hora_inicio");
-                entity.Property(e => e.HoraFin).HasColumnName("hora_fin");
 
                 entity.HasOne(e => e.Barbero).WithMany(b => b.ExcepcionesHorarios).HasForeignKey(e => e.BarberoId).OnDelete(DeleteBehavior.Cascade);
             });
@@ -265,7 +200,6 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<EstadoCita>(entity =>
             {
-                entity.ToTable("estados_cita");
                 entity.HasIndex(e => e.Nombre).IsUnique();
             });
         }
@@ -274,21 +208,6 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Cita>(entity =>
             {
-                entity.ToTable("citas");
-                entity.Property(c => c.BarberiaId).HasColumnName("barberia_id");
-                entity.Property(c => c.ClienteId).HasColumnName("cliente_id");
-                entity.Property(c => c.BarberoId).HasColumnName("barbero_id");
-                entity.Property(c => c.EstadoCitaId).HasColumnName("estado_cita_id");
-                entity.Property(c => c.CitaOriginalId).HasColumnName("cita_original_id");
-                entity.Property(c => c.HoraInicio).HasColumnName("hora_inicio");
-                entity.Property(c => c.HoraFin).HasColumnName("hora_fin");
-                entity.Property(c => c.DuracionTotalMinutos).HasColumnName("duracion_total_minutos");
-                entity.Property(c => c.PrecioTotal).HasColumnName("precio_total");
-                entity.Property(c => c.MotivoCancelacion).HasColumnName("motivo_cancelacion");
-                entity.Property(c => c.CanceladoPor).HasColumnName("cancelado_por");
-                entity.Property(c => c.CreadoEn).HasColumnName("creado_en");
-                entity.Property(c => c.ActualizadoEn).HasColumnName("actualizado_en");
-
                 entity.HasCheckConstraint("chk_cita_horas", "hora_inicio < hora_fin");
                 entity.HasIndex(c => new { c.BarberoId, c.Fecha, c.HoraInicio });
                 entity.HasIndex(c => new { c.ClienteId, c.Fecha });
@@ -305,13 +224,7 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<CitaServicio>(entity =>
             {
-                entity.ToTable("cita_servicios");
                 entity.HasIndex(cs => new { cs.CitaId, cs.ServicioId }).IsUnique();
-                entity.Property(cs => cs.CitaId).HasColumnName("cita_id");
-                entity.Property(cs => cs.ServicioId).HasColumnName("servicio_id");
-                entity.Property(cs => cs.PrecioAplicado).HasColumnName("precio_aplicado");
-                entity.Property(cs => cs.DuracionMinutos).HasColumnName("duracion_minutos");
-                entity.Property(cs => cs.CreadoEn).HasColumnName("creado_en");
 
                 entity.HasOne(cs => cs.Cita).WithMany(c => c.CitaServicios).HasForeignKey(cs => cs.CitaId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(cs => cs.Servicio).WithMany(s => s.CitaServicios).HasForeignKey(cs => cs.ServicioId).OnDelete(DeleteBehavior.Restrict);
@@ -322,9 +235,7 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<MetodoPago>(entity =>
             {
-                entity.ToTable("metodos_pago");
                 entity.HasIndex(m => new { m.BarberiaId, m.Codigo }).IsUnique();
-                entity.Property(m => m.BarberiaId).HasColumnName("barberia_id");
                 entity.Property(m => m.Configuracion).HasColumnType("jsonb").HasDefaultValue("{}");
 
                 entity.HasOne(m => m.Barberia).WithMany(b => b.MetodosPago).HasForeignKey(m => m.BarberiaId).OnDelete(DeleteBehavior.Cascade);
@@ -335,19 +246,7 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Pago>(entity =>
             {
-                entity.ToTable("pagos");
-                entity.Property(p => p.BarberiaId).HasColumnName("barberia_id");
-                entity.Property(p => p.CitaId).HasColumnName("cita_id");
-                entity.Property(p => p.ClienteId).HasColumnName("cliente_id");
-                entity.Property(p => p.MetodoPagoId).HasColumnName("metodo_pago_id");
-                entity.Property(p => p.RegistradoPor).HasColumnName("registrado_por");
-                entity.Property(p => p.ReferenciaExterna).HasColumnName("referencia_externa");
-                entity.Property(p => p.TransactionIdExterno).HasColumnName("transaction_id_externo");
-                entity.Property(p => p.DatosRespuesta).HasColumnType("jsonb").HasDefaultValue("{}").HasColumnName("datos_respuesta");
-                entity.Property(p => p.PagadoEn).HasColumnName("pagado_en");
-                entity.Property(p => p.ReembolsadoEn).HasColumnName("reembolsado_en");
-                entity.Property(p => p.CreadoEn).HasColumnName("creado_en");
-                entity.Property(p => p.ActualizadoEn).HasColumnName("actualizado_en");
+                entity.Property(p => p.DatosRespuesta).HasColumnType("jsonb").HasDefaultValue("{}");
 
                 entity.HasOne(p => p.Barberia).WithMany(b => b.Pagos).HasForeignKey(p => p.BarberiaId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(p => p.Cita).WithMany(c => c.Pagos).HasForeignKey(p => p.CitaId).OnDelete(DeleteBehavior.Restrict);
@@ -361,12 +260,7 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Resena>(entity =>
             {
-                entity.ToTable("resenas");
                 entity.HasIndex(r => r.CitaId).IsUnique();
-                entity.Property(r => r.CitaId).HasColumnName("cita_id");
-                entity.Property(r => r.ClienteId).HasColumnName("cliente_id");
-                entity.Property(r => r.BarberoId).HasColumnName("barbero_id");
-                entity.Property(r => r.CreadoEn).HasColumnName("creado_en");
 
                 entity.HasOne(r => r.Cita).WithOne(c => c.Resena).HasForeignKey<Resena>(r => r.CitaId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(r => r.Cliente).WithMany(c => c.Resenas).HasForeignKey(r => r.ClienteId).OnDelete(DeleteBehavior.Restrict);
@@ -378,13 +272,6 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Notificacion>(entity =>
             {
-                entity.ToTable("notificaciones");
-                entity.Property(n => n.BarberiaId).HasColumnName("barberia_id");
-                entity.Property(n => n.UsuarioId).HasColumnName("usuario_id");
-                entity.Property(n => n.CreadoEn).HasColumnName("creado_en");
-                entity.Property(n => n.EnviadaEn).HasColumnName("enviada_en");
-                entity.Property(n => n.LeidaEn).HasColumnName("leida_en");
-                entity.Property(n => n.Estado).HasColumnName("estado");
                 entity.Property(n => n.Datos).HasColumnType("jsonb").HasDefaultValue("{}");
                 entity.HasIndex(n => new { n.UsuarioId, n.Estado }).HasFilter("\"estado\" = 'pendiente'");
 
@@ -397,11 +284,8 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Configuracion>(entity =>
             {
-                entity.ToTable("configuraciones");
                 entity.HasIndex(c => new { c.BarberiaId, c.Clave }).IsUnique();
-                entity.Property(c => c.BarberiaId).HasColumnName("barberia_id");
                 entity.Property(c => c.Valor).HasColumnType("jsonb");
-                entity.Property(c => c.ActualizadoEn).HasColumnName("actualizado_en");
 
                 entity.HasOne(c => c.Barberia).WithMany(b => b.Configuraciones).HasForeignKey(c => c.BarberiaId).OnDelete(DeleteBehavior.Cascade);
             });
@@ -411,14 +295,8 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<Auditoria>(entity =>
             {
-                entity.ToTable("auditoria");
-                entity.Property(a => a.BarberiaId).HasColumnName("barberia_id");
-                entity.Property(a => a.RegistroId).HasColumnName("registro_id");
-                entity.Property(a => a.DatosAnteriores).HasColumnType("jsonb").HasColumnName("datos_anteriores");
-                entity.Property(a => a.DatosNuevos).HasColumnType("jsonb").HasColumnName("datos_nuevos");
-                entity.Property(a => a.UsuarioId).HasColumnName("usuario_id");
-                entity.Property(a => a.IpAddress).HasColumnName("ip_address");
-                entity.Property(a => a.CreadoEn).HasColumnName("creado_en");
+                entity.Property(a => a.DatosAnteriores).HasColumnType("jsonb");
+                entity.Property(a => a.DatosNuevos).HasColumnType("jsonb");
 
                 entity.HasOne(a => a.Barberia).WithMany(b => b.Auditorias).HasForeignKey(a => a.BarberiaId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(a => a.Usuario).WithMany().HasForeignKey(a => a.UsuarioId).OnDelete(DeleteBehavior.SetNull);
@@ -429,13 +307,8 @@ namespace LegacyBarber.App.DataAccess
         {
             modelBuilder.Entity<TokenRefresco>(entity =>
             {
-                entity.ToTable("tokens_refresco");
                 entity.HasIndex(rt => rt.Token).IsUnique();
                 entity.HasIndex(rt => rt.UsuarioId);
-                entity.Property(rt => rt.UsuarioId).HasColumnName("usuario_id");
-                entity.Property(rt => rt.ExpiresAt).HasColumnName("expires_at");
-                entity.Property(rt => rt.CreatedAt).HasColumnName("created_at");
-                entity.Property(rt => rt.RevokedAt).HasColumnName("revoked_at");
 
                 entity.HasOne(rt => rt.Usuario).WithMany(u => u.TokensRefresco).HasForeignKey(rt => rt.UsuarioId).OnDelete(DeleteBehavior.Cascade);
             });

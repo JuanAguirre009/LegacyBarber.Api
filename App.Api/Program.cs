@@ -1,5 +1,6 @@
 ﻿using LegacyBarber.App.Api.Data;
 using LegacyBarber.App.Api.Extensions;
+using LegacyBarber.App.Api.Filters;
 using LegacyBarber.App.Api.Middleware;
 using FluentValidation;
 using Serilog;
@@ -11,12 +12,12 @@ builder.Host.UseSerilog((hostContext, services, configuration) =>
     configuration.ReadFrom.Configuration(hostContext.Configuration);
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplicationServices(builder.Configuration);
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddValidatorsFromAssemblyContaining<LegacyBarber.App.Core.Validators.Identity.LoginValidator>();
 builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);
 builder.Services.AddScoped<DatabaseSeeder>();
 

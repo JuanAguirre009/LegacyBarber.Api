@@ -59,7 +59,9 @@ namespace LegacyBarber.App.Core.Services.Identity
             IReadOnlyList<Rol> roles = (await rolRepository.GetByNamesAsync(model.Roles, cancellationToken)).ToList();
             user.SetRoles(roles);
 
-            await usuarioRepository.CreateAsync(user, cancellationToken);
+            usuarioRepository.Add(user);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
             return MapToModel(user);
         }
 

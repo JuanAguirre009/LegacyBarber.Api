@@ -45,7 +45,9 @@ namespace LegacyBarber.App.Core.Services.Identity
             if (user == null || !user.Activo || !passwordHasher.VerifyPassword(user.PasswordHash, request.Password))
                 throw new UnauthorizedAccessException("Invalid credentials.");
 
-            return await GenerateTokenPairAsync(MapToModel(user), cancellationToken);
+            TokenPairModel tokenPair = await GenerateTokenPairAsync(MapToModel(user), cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+            return tokenPair;
         }
 
         public async Task<TokenPairModel> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
@@ -78,7 +80,7 @@ namespace LegacyBarber.App.Core.Services.Identity
             TokenRefresco newRefreshToken = TokenRefresco.Create(refreshTokenValue, refreshTokenExpiresAt);
             newRefreshToken.UsuarioId = userModel.Id;
 
-            await refreshTokenRepository.CreateAsync(newRefreshToken, cancellationToken);
+            refreshTokenRepository.Add(newRefreshToken);
             tokenPair.RefreshToken = refreshTokenValue;
 
             return tokenPair;

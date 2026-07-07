@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>LegacyBarber.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <UserSecretsId>legacy-barber-api-9f8e7d6c-5b4a-1234-5678-123456789abc</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +24,5 @@
   <ItemGroup>
     <ProjectReference Include="..\App.Core\App.Core.csproj" />
     <ProjectReference Include="..\App.DataAccess\App.DataAccess.csproj" />
-    <ProjectReference Include="..\App.Util\App.Util.csproj" />
   </ItemGroup>
 </Project>
