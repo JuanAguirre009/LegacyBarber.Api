@@ -253,6 +253,19 @@ El superadmin no crea barberías de forma rutinaria, pero conserva esa función 
 - Un **barbero puede ser cliente de otra barbería** técnicamente en el backend; el frontend no soportará ese caso en la primera versión.
 - El marketplace muestra solo barberías en estado `Activa`.
 
+### Correcciones de seguridad y calidad (julio 2026)
+
+Durante una auditoría de Fase 1 se identificaron y corrigieron los siguientes puntos:
+
+1. **Normalización de roles** (`RolRepository.cs`): ahora aplica `Trim().ToLowerInvariant()` para evitar que roles con mayúsculas queden sin asignar.
+2. **Validación del header `X-Barberia-Id`** (`CurrentUserService.cs`): el header se contrasta contra las relaciones reales del usuario (tablas `Clientes`, `Barbero`, `Usuario.BarberiaId`) antes de aceptarlo. Un superadmin tiene acceso a cualquier barbería.
+3. **Restricción de rol en `asociar-barberia`** (`ClientesController.cs`): solo usuarios con rol `cliente` pueden asociarse a una barbería.
+4. **Email duplicado controlado** (`UsuarioService.CreateAsync`): ahora verifica el email antes de insertar y devuelve un error 409 claro.
+5. **Superadmin con email verificado** (`DatabaseSeeder.cs`): `EmailVerificado = true` para evitar bloqueo cuando se active la verificación obligatoria (Fase 14).
+6. **`LoginResponseModel.Usuario.Barberias`** ahora incluye la lista de barberías del usuario (antes solo estaba en `LoginResponseModel.Barberias`).
+7. **`UsersController` renombrado a `UsuariosController`** para consistencia con el resto de la nomenclatura en español.
+8. **`UsuarioModel.Barberias`** agregado para que el superadmin vea a qué barberías pertenece cada usuario en `/api/usuarios`.
+
 ## Roadmap / Plan de fases
 
 El desarrollo se divide en fases secuenciales. Cada fase se implementa y prueba antes de pasar a la siguiente.
@@ -265,11 +278,15 @@ El desarrollo se divide en fases secuenciales. Cada fase se implementa y prueba 
 - Endpoint para que un cliente se asocie a una barbería (`POST /api/clientes/asociar-barberia`).
 - Ajustar JWT para soportar contexto de barbería.
 
-### Fase 2: Onboarding de barberías
+### Fase 2: Onboarding de barberías ✅
 - Registro de barbería por dueño (self-service) (`POST /api/barberias/mias`).
-- Asistente: nombre, slug, dirección, ciudad, teléfono, email de contacto y logo.
+- Campos: nombre, slug, dirección, ciudad, teléfono, email de contacto y logo (opcional).
+- Slug validado con regex `^[a-z0-9]+(-[a-z0-9]+)*$` y verificado como único en BD.
 - Estado inicial `EnConfiguracion`.
-- Configuración de horario de atención general de la barbería.
+- El dueño es ascendido automáticamente a `admin` de su barbería (`Usuario.BarberiaId` + rol `admin`).
+- El endpoint de creación devuelve `LoginResponseModel` con tokens nuevos (roles y `barberia_id` actualizados).
+- Endpoint para ver la barbería del usuario actual (`GET /api/barberias/mias`).
+- Configuración de horario de atención general (`PUT /api/barberias/mias/horario`).
 
 ### Fase 3: Gestión de catálogo (admin)
 - CRUD de categorías de servicios.
@@ -359,7 +376,7 @@ El desarrollo se divide en fases secuenciales. Cada fase se implementa y prueba 
 
 ### Fases de funcionalidad
 - [x] Fase 1: autenticación y onboarding de clientes.
-- [ ] Fase 2: onboarding de barberías.
+- [x] Fase 2: onboarding de barberías.
 - [ ] Fase 3: gestión de catálogo (admin).
 - [ ] Fase 4: gestión de barberos (admin).
 - [ ] Fase 5: configuración de barbería (admin).
@@ -380,6 +397,6 @@ El desarrollo se divide en fases secuenciales. Cada fase se implementa y prueba 
 - [ ] Implementar paginación y filtrado por `BarberiaId` en listados.
 - [ ] Agregar transacciones explícitas a `IUnitOfWork` si se requiere atomicidad multi-repositorio.
 - [ ] Configurar Swagger con esquema Bearer.
-- [ ] Agregar rate limiting y CORS.
+- [x] Agregar rate limiting y CORS (CORS configurado para `localhost:3000`, rate limiting pendiente).
 - [ ] Implementar constraint `EXCLUDE` de PostgreSQL para evitar citas solapadas.
 - [ ] Crear proyectos de pruebas unitarias e integración.

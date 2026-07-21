@@ -7,5 +7,7 @@ namespace LegacyBarber.App.Core.Interfaces.Persistence
     /// </summary>
     public interface IBarberiaRepository : IRepository<Barberia, long>
     {
+        Task<bool> ExisteSlugAsync(string slug, CancellationToken cancellationToken = default);
+        Task<bool> ExisteEmailAsync(string email, CancellationToken cancellationToken = default);
     }
 }
