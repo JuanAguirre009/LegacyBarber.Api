@@ -7,5 +7,6 @@ namespace LegacyBarber.App.Core.Interfaces.Persistence
     /// </summary>
     public interface ICategoriaServicioRepository : IRepository<CategoriaServicio, long>
     {
+        Task<IReadOnlyList<CategoriaServicio>> GetAllByBarberiaAsync(long barberiaId, CancellationToken cancellationToken = default);
     }
 }

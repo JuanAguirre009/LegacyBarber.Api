@@ -4,6 +4,7 @@ using LegacyBarber.App.Core.Interfaces.Identity;
 using LegacyBarber.App.Core.Security;
 using LegacyBarber.App.Core.Services.BarberiaService;
 using LegacyBarber.App.Core.Services.BarberoService;
+using LegacyBarber.App.Core.Services.CategoriaServicioService;
 using LegacyBarber.App.Core.Services.CitaService;
 using LegacyBarber.App.Core.Services.ClienteService;
 using LegacyBarber.App.Core.Services.Identity;
@@ -98,6 +99,7 @@ namespace LegacyBarber.App.Api.Extensions
             services.AddScoped<IBarberiaService, BarberiaService>();
             services.AddScoped<IBarberoService, BarberoService>();
             services.AddScoped<IClienteService, ClienteService>();
+            services.AddScoped<ICategoriaServicioService, CategoriaServicioService>();
             services.AddScoped<IServicioService, ServicioService>();
             services.AddScoped<ICitaService, CitaService>();
             services.AddScoped<IPagoService, PagoService>();

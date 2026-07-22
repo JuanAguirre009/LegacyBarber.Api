@@ -288,10 +288,13 @@ El desarrollo se divide en fases secuenciales. Cada fase se implementa y prueba 
 - Endpoint para ver la barbería del usuario actual (`GET /api/barberias/mias`).
 - Configuración de horario de atención general (`PUT /api/barberias/mias/horario`).
 
-### Fase 3: Gestión de catálogo (admin)
-- CRUD de categorías de servicios.
-- CRUD de servicios: nombre, descripción, duración, precio, imagen, categoría.
-- Activar/desactivar servicios.
+### Fase 3: Gestión de catálogo (admin) ✅
+- CRUD de categorías de servicios (`GET/POST/PUT/DELETE /api/barberias/mias/categorias`).
+- CRUD de servicios: nombre, descripción, duración, precio, color, categoría, imagen (`GET/POST/PUT/DELETE /api/barberias/mias/servicios`).
+- Filtro de servicios por categoría (`?categoriaId=1`).
+- Activar/desactivar servicios (`PATCH /api/barberias/mias/servicios/{id}/activar`).
+- Validación de nombre único por barbería en ambas entidades.
+- Validación de que la categoría asignada pertenece a la misma barbería.
 
 ### Fase 4: Gestión de barberos (admin)
 - CRUD de barberos.
@@ -377,7 +380,7 @@ El desarrollo se divide en fases secuenciales. Cada fase se implementa y prueba 
 ### Fases de funcionalidad
 - [x] Fase 1: autenticación y onboarding de clientes.
 - [x] Fase 2: onboarding de barberías.
-- [ ] Fase 3: gestión de catálogo (admin).
+- [x] Fase 3: gestión de catálogo (admin).
 - [ ] Fase 4: gestión de barberos (admin).
 - [ ] Fase 5: configuración de barbería (admin).
 - [ ] Fase 6: activación y pagos de barbería.
